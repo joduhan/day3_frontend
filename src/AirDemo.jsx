@@ -1,5 +1,6 @@
 // Vercel 프론트(React)에 넣는 화면 — 결과만 Railway에 물어본다
 import { useEffect, useState } from "react";
+import JejuMap, { STATION_COORDS } from "./JejuMap";
 
 const API = import.meta.env.VITE_API_URL;
 const COLOR = { 좋음: "#2f80ed", 보통: "#27ae60", 나쁨: "#f2994a", 매우나쁨: "#eb5757" };
@@ -121,6 +122,14 @@ export default function AirDemo() {
           <Badge grade={summary.avg_pm10_grade} />
           {summary.mode === "demo" && <small> (연습 데이터)</small>}
         </p>
+      )}
+
+      {/* 지도: 지역(측정소)을 클릭하면 그 곳의 미세먼지를 표시 */}
+      <JejuMap rows={rows} selected={selected} onSelect={predict} />
+      {rows.some((r) => !STATION_COORDS[r.station]) && (
+        <small style={{ color: "#888" }}>
+          지도 좌표가 없는 측정소: {rows.filter((r) => !STATION_COORDS[r.station]).map((r) => r.station).join(", ")}
+        </small>
       )}
 
       {/* 시계열 차트 + 예측 */}
